@@ -249,11 +249,14 @@ const Dashboard = () => {
                 <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
                   {isStreaming ? (
                     <>
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        playsInline
+                      <img
+                        src={`${API}/video_feed`}
+                        alt="Live video feed"
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.error('Video feed error');
+                          e.target.style.display = 'none';
+                        }}
                       />
                       <DetectionOverlay />
                     </>
