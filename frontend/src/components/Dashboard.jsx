@@ -339,24 +339,24 @@ const Dashboard = () => {
                   <label className="text-sm font-medium">Visual Alerts</label>
                   <Switch 
                     checked={visualAlerts} 
-                    onCheckedChange={setVisualAlerts} 
+                    onCheckedChange={handleVisualAlertsChange} 
                   />
                 </div>
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium">Sound Alerts</label>
                   <Switch 
                     checked={soundAlerts} 
-                    onCheckedChange={setSoundAlerts} 
+                    onCheckedChange={handleSoundAlertsChange} 
                   />
                 </div>
                 <div className="pt-4">
                   <label className="text-sm font-medium mb-2 block">Compliance Rate</label>
                   <Progress 
-                    value={stats.complianceRate} 
+                    value={stats.complianceRate || 0} 
                     className="h-3" 
                   />
                   <p className="text-xs text-gray-400 mt-1">
-                    {stats.maskedCount} out of {stats.totalDetections} wearing masks
+                    {stats.maskedCount || 0} out of {stats.totalDetections || 0} wearing masks
                   </p>
                 </div>
               </CardContent>
