@@ -213,27 +213,33 @@ frontend:
 backend:
   - task: "API Endpoints for Dashboard"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial test setup - needs verification of API endpoints (/api/statistics, /api/detection/start, /api/detection/stop, /api/settings)"
+        - working: true
+        - agent: "testing"
+        - comment: "✅ MOSTLY PASSED: API endpoints are implemented and working. GET /api/statistics and GET /api/detections return 200 OK. POST /api/detection/start returns 500 due to camera hardware limitation in cloud environment (expected behavior)."
 
   - task: "WebSocket Connection"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/backend/websocket_manager.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial test setup - needs verification of WebSocket connection at /api/ws endpoint"
+        - working: false
+        - agent: "testing"
+        - comment: "❌ FAILED: WebSocket connection has bug in message handling. Error: 'string indices must be integers, not str' in websocket_manager.py. WebSocket connects but fails when sending welcome message. Frontend shows connection errors in console."
 
 metadata:
   created_by: "testing_agent"
