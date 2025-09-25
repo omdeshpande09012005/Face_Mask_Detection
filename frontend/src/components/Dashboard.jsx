@@ -372,9 +372,9 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 max-h-80 overflow-y-auto">
-                  {detections.map((detection) => (
+                  {detections.length > 0 ? detections.map((detection, index) => (
                     <div 
-                      key={detection.id}
+                      key={detection.id || index}
                       className="flex items-center justify-between p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
                     >
                       <div className="flex items-center space-x-3">
@@ -382,8 +382,10 @@ const Dashboard = () => {
                           detection.hasMask ? 'bg-green-400' : 'bg-red-400'
                         }`} />
                         <div>
-                          <p className="text-sm font-medium">{detection.person}</p>
-                          <p className="text-xs text-gray-400">{detection.timestamp}</p>
+                          <p className="text-sm font-medium">Detection {index + 1}</p>
+                          <p className="text-xs text-gray-400">
+                            {new Date(detection.timestamp).toLocaleTimeString() || 'Now'}
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -394,11 +396,16 @@ const Dashboard = () => {
                           {detection.hasMask ? 'MASK' : 'NO MASK'}
                         </Badge>
                         <p className="text-xs text-gray-400 mt-1">
-                          {Math.round(detection.confidence * 100)}%
+                          {Math.round((detection.confidence || 0) * 100)}%
                         </p>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-center text-gray-400 py-8">
+                      <p>No detections yet</p>
+                      <p className="text-sm mt-2">Start detection to see results</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
