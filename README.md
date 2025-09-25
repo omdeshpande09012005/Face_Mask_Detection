@@ -1,5 +1,3 @@
-# Face_Mask_Detection
-
 # 🎭 Face Mask Detection System
 
 A real-time AI-powered face mask detection system built with React, FastAPI, OpenCV, and TensorFlow. This system provides live webcam monitoring, compliance tracking, and professional dashboard analytics for mask-wearing detection in public spaces, corporate environments, and healthcare facilities.
