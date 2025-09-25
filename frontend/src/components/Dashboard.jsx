@@ -30,58 +30,144 @@ const Dashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isStreaming) {
-      startWebcam();
-    } else {
-      stopWebcam();
-    }
-    return () => stopWebcam();
-  }, [isStreaming]);
+    initializeWebSocket();
+    fetchInitialData();
+    
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
 
-  const startWebcam = async () => {
+  const initializeWebSocket = () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 640, height: 480 } 
+      const wsUrl = BACKEND_URL.replace('http', 'ws') + '/api/ws';
+      wsRef.current = new WebSocket(wsUrl);
+      
+      wsRef.current.onopen = () => {
+        setWsConnected(true);
+        console.log('WebSocket connected');
+      };
+      
+      wsRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleWebSocketMessage(data);
+      };
+      
+      wsRef.current.onclose = () => {
+        setWsConnected(false);
+        console.log('WebSocket disconnected');
+        // Attempt to reconnect after 3 seconds
+        setTimeout(initializeWebSocket, 3000);
+      };
+      
+      wsRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        setWsConnected(false);
+      };
+    } catch (error) {
+      console.error('Error initializing WebSocket:', error);
+    }
+  };
+
+  const handleWebSocketMessage = (data) => {
+    switch (data.type) {
+      case 'detection_update':
+        setDetections(data.data);
+        break;
+      case 'statistics_update':
+        setStats(data.data);
+        break;
+      case 'alert_triggered':
+        if (visualAlerts) {
+          toast({
+            title: "⚠️ Mask Violation Detected",
+            description: data.data.message,
+            variant: "destructive"
+          });
+        }
+        break;
+      default:
+        console.log('Unknown WebSocket message type:', data.type);
+    }
+  };
+
+  const fetchInitialData = async () => {
+    try {
+      const [statsResponse, detectionsResponse] = await Promise.all([
+        axios.get(`${API}/statistics`),
+        axios.get(`${API}/detections?limit=10`)
+      ]);
+      
+      setStats(statsResponse.data);
+      setDetections(detectionsResponse.data.detections || []);
+    } catch (error) {
+      console.error('Error fetching initial data:', error);
+      toast({
+        title: "Connection Error",
+        description: "Unable to connect to the backend service",
+        variant: "destructive"
       });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+    }
+  };
+
+  const toggleStreaming = async () => {
+    try {
+      if (isStreaming) {
+        await axios.post(`${API}/detection/stop`);
+        setIsStreaming(false);
+        toast({
+          title: "Detection Stopped",
+          description: "Face mask detection has been stopped",
+        });
+      } else {
+        await axios.post(`${API}/detection/start`);
+        setIsStreaming(true);
+        toast({
+          title: "Detection Started",
+          description: "Face mask detection is now active",
+        });
       }
     } catch (error) {
+      console.error('Error toggling detection:', error);
       toast({
-        title: "Camera Error",
-        description: "Unable to access webcam. Please check permissions.",
-        variant: "destructive"
-      });
-      setIsStreaming(false);
-    }
-  };
-
-  const stopWebcam = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
-      videoRef.current.srcObject = null;
-    }
-  };
-
-  const toggleStreaming = () => {
-    setIsStreaming(!isStreaming);
-    if (!isStreaming) {
-      toast({
-        title: "Detection Started",
-        description: "Face mask detection is now active",
-      });
-    }
-  };
-
-  const handleAlert = (detection) => {
-    if (!detection.hasMask && visualAlerts) {
-      toast({
-        title: "⚠️ Mask Violation Detected",
-        description: `${detection.person} is not wearing a mask (${Math.round(detection.confidence * 100)}% confidence)`,
+        title: "Error",
+        description: "Failed to start/stop detection. Please try again.",
         variant: "destructive"
       });
     }
+  };
+
+  const updateSettings = async (newSettings) => {
+    try {
+      await axios.put(`${API}/settings`, {
+        visualAlerts,
+        soundAlerts,
+        ...newSettings
+      });
+      toast({
+        title: "Settings Updated",
+        description: "Your preferences have been saved",
+      });
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update settings",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleVisualAlertsChange = (value) => {
+    setVisualAlerts(value);
+    updateSettings({ visualAlerts: value });
+  };
+
+  const handleSoundAlertsChange = (value) => {
+    setSoundAlerts(value);
+    updateSettings({ soundAlerts: value });
   };
 
   const DetectionOverlay = () => (
