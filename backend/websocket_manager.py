@@ -30,7 +30,8 @@ class WebSocketManager:
     async def send_to_connection(self, websocket: WebSocketServerProtocol, data: Dict):
         """Send data to a specific connection"""
         try:
-            await websocket.send(json.dumps(data))
+            message = json.dumps(data) if isinstance(data, dict) else str(data)
+            await websocket.send(message)
         except ConnectionClosed:
             logger.warning("Tried to send to closed connection")
             self.active_connections.discard(websocket)
