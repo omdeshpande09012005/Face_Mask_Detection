@@ -101,3 +101,139 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test the Face Mask Detection System dashboard functionality including dashboard loading, connection status, statistics display, start detection button, settings controls, recent detections panel, and video feed area."
+
+frontend:
+  - task: "Dashboard Loading and Title Display"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of dashboard loading with proper title 'Face Mask Detection System'"
+
+  - task: "Connection Status Display"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of WebSocket connection status badge showing CONNECTED/DISCONNECTED"
+
+  - task: "Statistics Display Cards"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of all statistic cards (Total Detected, With Mask, Without Mask, Compliance)"
+
+  - task: "Start Detection Button Functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of Start/Stop button functionality and API integration"
+
+  - task: "Settings Controls (Visual and Sound Alerts)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of toggle switches for visual and sound alerts"
+
+  - task: "Recent Detections Panel"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of Recent Detections panel showing appropriate message when no detections"
+
+  - task: "Video Feed Area Display"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of video feed area showing camera icon and prompt text when inactive"
+
+backend:
+  - task: "API Endpoints for Dashboard"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of API endpoints (/api/statistics, /api/detection/start, /api/detection/stop, /api/settings)"
+
+  - task: "WebSocket Connection"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/websocket_manager.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial test setup - needs verification of WebSocket connection at /api/ws endpoint"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+
+test_plan:
+  current_focus:
+    - "Dashboard Loading and Title Display"
+    - "Connection Status Display"
+    - "Statistics Display Cards"
+    - "Start Detection Button Functionality"
+    - "Settings Controls (Visual and Sound Alerts)"
+    - "Recent Detections Panel"
+    - "Video Feed Area Display"
+    - "API Endpoints for Dashboard"
+    - "WebSocket Connection"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+    - message: "Created initial test structure for Face Mask Detection System dashboard. Ready to execute comprehensive UI and integration tests using Playwright. All services are running (backend, frontend, mongodb). Will test dashboard loading, connection status, statistics display, controls functionality, and API integrations."
