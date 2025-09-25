@@ -6,31 +6,28 @@ import { Switch } from './ui/switch';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { useToast } from '../hooks/use-toast';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const Dashboard = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [soundAlerts, setSoundAlerts] = useState(true);
   const [visualAlerts, setVisualAlerts] = useState(true);
-  const videoRef = useRef(null);
-  const { toast } = useToast();
-
-  // Mock detection data - will be replaced with real data later
-  const [detections] = useState([
-    { id: 1, timestamp: '14:32:15', person: 'Person 1', hasMask: true, confidence: 0.94, position: { x: 150, y: 120, w: 100, h: 120 } },
-    { id: 2, timestamp: '14:31:45', person: 'Person 2', hasMask: false, confidence: 0.89, position: { x: 350, y: 200, w: 95, h: 115 } },
-    { id: 3, timestamp: '14:31:12', person: 'Person 3', hasMask: true, confidence: 0.97, position: { x: 280, y: 180, w: 88, h: 105 } },
-    { id: 4, timestamp: '14:30:58', person: 'Person 4', hasMask: false, confidence: 0.85, position: { x: 420, y: 160, w: 92, h: 110 } },
-    { id: 5, timestamp: '14:30:33', person: 'Person 5', hasMask: true, confidence: 0.91, position: { x: 200, y: 250, w: 98, h: 118 } }
-  ]);
-
-  const [stats] = useState({
-    totalDetections: 147,
-    maskedCount: 112,
-    unmaskedCount: 35,
-    complianceRate: 76.2,
-    avgConfidence: 0.92,
-    activeAlerts: 3
+  const [detections, setDetections] = useState([]);
+  const [stats, setStats] = useState({
+    totalDetections: 0,
+    maskedCount: 0,
+    unmaskedCount: 0,
+    complianceRate: 0,
+    avgConfidence: 0,
+    activeAlerts: 0
   });
+  const [wsConnected, setWsConnected] = useState(false);
+  const videoRef = useRef(null);
+  const wsRef = useRef(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isStreaming) {
