@@ -207,6 +207,9 @@ const Dashboard = () => {
             <p className="text-gray-400 mt-2">Real-Time Compliance Monitoring Dashboard</p>
           </div>
           <div className="flex items-center space-x-4">
+            <Badge variant={wsConnected ? "default" : "destructive"} className="px-3 py-1">
+              {wsConnected ? "CONNECTED" : "DISCONNECTED"}
+            </Badge>
             <Badge variant={isStreaming ? "default" : "secondary"} className="px-3 py-1">
               {isStreaming ? "ACTIVE" : "INACTIVE"}
             </Badge>
