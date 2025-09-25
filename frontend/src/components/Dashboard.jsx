@@ -172,17 +172,17 @@ const Dashboard = () => {
 
   const DetectionOverlay = () => (
     <div className="absolute inset-0 pointer-events-none">
-      {detections.slice(0, 3).map((detection) => (
+      {detections.slice(0, 3).map((detection, index) => (
         <div
-          key={detection.id}
+          key={detection.id || index}
           className={`absolute border-2 transition-all duration-200 ${
             detection.hasMask ? 'border-green-400' : 'border-red-400'
           }`}
           style={{
-            left: `${detection.position.x}px`,
-            top: `${detection.position.y}px`,
-            width: `${detection.position.w}px`,
-            height: `${detection.position.h}px`,
+            left: `${detection.bbox?.x || 0}px`,
+            top: `${detection.bbox?.y || 0}px`,
+            width: `${detection.bbox?.w || 0}px`,
+            height: `${detection.bbox?.h || 0}px`,
           }}
         >
           <div className={`absolute -top-8 left-0 px-2 py-1 text-xs font-medium rounded ${
@@ -190,7 +190,7 @@ const Dashboard = () => {
               ? 'bg-green-500 text-white' 
               : 'bg-red-500 text-white'
           }`}>
-            {detection.hasMask ? 'MASK' : 'NO MASK'} ({Math.round(detection.confidence * 100)}%)
+            {detection.hasMask ? 'MASK' : 'NO MASK'} ({Math.round((detection.confidence || 0) * 100)}%)
           </div>
         </div>
       ))}
